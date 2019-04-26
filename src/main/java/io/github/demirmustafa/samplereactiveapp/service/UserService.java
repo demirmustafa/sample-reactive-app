@@ -1,6 +1,5 @@
 package io.github.demirmustafa.samplereactiveapp.service;
 
-import io.github.demirmustafa.samplereactiveapp.domain.entity.User;
 import io.github.demirmustafa.samplereactiveapp.domain.repository.UserRepository.UserRepository;
 import io.github.demirmustafa.samplereactiveapp.mapper.request.UserRequestMapper;
 import io.github.demirmustafa.samplereactiveapp.mapper.response.UserResponseMapper.UserResponseMapper;
@@ -26,8 +25,9 @@ public class UserService {
     }
 
     public Mono<UserResource> create(CreateUserRequest request) {
-        User user = userRequestMapper.createRequest2Entity(request);
-        return userRepository.save(user)
+        return Mono.just(request)
+                .map(userRequestMapper::createRequest2Entity)
+                .flatMap(userRepository::save)
                 .map(userResponseMapper::entity2Resource);
     }
 
